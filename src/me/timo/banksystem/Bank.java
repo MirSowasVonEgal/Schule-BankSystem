@@ -1,7 +1,7 @@
 package me.timo.banksystem;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class Bank {
 
@@ -17,7 +17,7 @@ public class Bank {
 
         public void setKunde(Kunde kunde) {
             this.kunde = kunde;
-            this.kunde.addKonto(this);
+            this.kunde.getKontoListe().add(this);
         }
 
         public double getKontostand() {
@@ -37,16 +37,16 @@ public class Bank {
         }
 
         public Konto(Kunde kunde) {
+            this.IBAN = UUID.randomUUID().toString();
             this.kunde = kunde;
-            kunde.addKonto(this);
+            this.kunde.getKontoListe().add(this);
         }
 
     }
 
-    // Assotiationen
     private Bankautomat bankautomat;
     private ArrayList<Konto> kontoListe = new ArrayList<>();
-    private ArrayList<Kunde> kundeListe = new ArrayList<>();
+    private ArrayList<Kunde> kundenListe = new ArrayList<>();
 
 
     private String name = "";
@@ -62,6 +62,11 @@ public class Bank {
         this.bankautomat.setBank(this);
     }
 
+    public Bank(Bankautomat bankautomat) {
+        this.bankautomat = bankautomat;
+        this.bankautomat.setBank(this);
+    }
+
     // Controller Konto
     public ArrayList<Konto> getKontoListe() {
         return kontoListe;
@@ -71,33 +76,39 @@ public class Bank {
         this.kontoListe = kontoListe;
     }
 
-    public void kontoErstellen(Kunde kunde) {
+    public Konto kontoErstellen(Kunde kunde) {
         Konto konto = new Konto(kunde);
         kontoListe.add(konto);
+        kunde.addBank(this);
+        return konto;
     }
 
-    public void kontoKontostand() {
-
+    public Konto getKontoByIBAN(String IBAN) {
+        for (Konto konto : getKontoListe()) {
+            if(konto.getIBAN().equals(IBAN))
+                return konto;
+        }
+        return null;
     }
 
     // Controller Kunde
-    public ArrayList<Kunde> getKundeListe() {
-        return kundeListe;
+    public ArrayList<Kunde> getKundenListe() {
+        return kundenListe;
     }
 
-    public void setKundeListe(ArrayList<Kunde> kundeListe) {
-        this.kundeListe = kundeListe;
+    public void setKundenListe(ArrayList<Kunde> kundeListe) {
+        this.kundenListe = kundeListe;
 
     }
 
     public void addKunde(Kunde kunde) {
-        kundeListe.add(kunde);
-        kunde.addBank(this);
+        kundenListe.add(kunde);
+        kunde.getBankListe().add(this);
     }
 
     public void removeKunde(Kunde kunde) {
-        kundeListe.remove(kunde);
-        kunde.removeBank(this);
+        kundenListe.remove(kunde);
+        kunde.getBankListe().remove(this);
     }
 
     // Getter/Setter
@@ -121,19 +132,14 @@ public class Bank {
         überweisungsAuftragsListe.add(überweisungsAuftrag);
     }
 
-    public Bank() {
-
-    }
-
-    public Bank(Bankautomat bankautomat) {
-        this.bankautomat = bankautomat;
-        this.bankautomat.setBank(this);
+    public Bank(String name) {
+        this.name = name;
     }
 
     // Methoden der Bank
     public void transferieren(Konto von_Konto, Konto auf_Konto, double betrag) {
         von_Konto.setKontostand(von_Konto.getKontostand() - betrag);
-        auf_Konto.setKontostand(von_Konto.getKontostand() + betrag);
+        auf_Konto.setKontostand(auf_Konto.getKontostand() + betrag);
     }
 
     public void überweisungsAuftragAnnehmen(ÜberweisungsAuftrag überweisungsAuftrag) {
@@ -142,7 +148,10 @@ public class Bank {
 
     public void überweisungsAuftragAusführen() {
         for (ÜberweisungsAuftrag überweisungsAuftrag : überweisungsAuftragsListe) {
-
+            Konto von_Konto = getKontoByIBAN(überweisungsAuftrag.getVon_IBAN());
+            Konto auf_Konto = getKontoByIBAN(überweisungsAuftrag.getAuf_IBAN());
+            if(von_Konto == null || auf_Konto == null) return;
+            transferieren(von_Konto, auf_Konto, überweisungsAuftrag.getBetrag());
         }
     }
 }

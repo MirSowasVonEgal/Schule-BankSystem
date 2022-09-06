@@ -92,6 +92,7 @@ public class Kunde {
         this.bargeld = bargeld;
     }
 
+    // Constructors
     public Kunde() {
 
     }
@@ -101,11 +102,45 @@ public class Kunde {
         konto.setKunde(this);
     }
 
-    public void überweisungsAuftragAusfüllen(double betrag, String von_IBAN, String auf_IBAN) {
-
+    public Kunde(Bank bank) {
+        bankListe.add(bank);
+        bank.addKunde(this);
     }
 
-    public void überweisungsAuftragEinreichen(ÜberweisungsAuftrag überweisungsAuftrag) {
+    public Kunde(String name, int alter) {
+        this.name = name;
+        this.alter = alter;
+    }
 
+    public Kunde(Bank bank, String name, int alter) {
+        bankListe.add(bank);
+        bank.addKunde(this);
+        this.name = name;
+        this.alter = alter;
+    }
+
+    public Kunde(Bank.Konto konto, String name, int alter) {
+        kontoListe.add(konto);
+        konto.setKunde(this);
+        this.name = name;
+        this.alter = alter;
+    }
+
+    public ÜberweisungsAuftrag überweisungsAuftragAusfüllen(double betrag, String von_IBAN, String auf_IBAN) {
+        ÜberweisungsAuftrag überweisungsAuftrag = new ÜberweisungsAuftrag(betrag, von_IBAN, auf_IBAN);
+        addÜberweisungsAuftrag(überweisungsAuftrag);
+        return überweisungsAuftrag;
+    }
+
+    public void überweisungsAuftragEinreichen(ÜberweisungsAuftrag überweisungsAuftrag, Bank bank) {
+        bank.überweisungsAuftragAnnehmen(überweisungsAuftrag);
+        removeÜberweisungsAuftrag(überweisungsAuftrag);
+    }
+
+    public void alleÜberweisungsAufträgEinreichen(Bank bank) {
+        for (ÜberweisungsAuftrag überweisungsAuftrag : überweisungsAuftragListe) {
+            bank.überweisungsAuftragAnnehmen(überweisungsAuftrag);
+        }
+        überweisungsAuftragListe.clear();
     }
 }
