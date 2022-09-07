@@ -4,9 +4,12 @@ import java.util.ArrayList;
 
 public class Kunde {
 
+    // Beziehungen
     private ArrayList<Bank.Konto> kontoListe = new ArrayList<>();
     private ArrayList<Bank> bankListe = new ArrayList<>();
     private ArrayList<ÜberweisungsAuftrag> überweisungsAuftragListe = new ArrayList<>();
+
+    // Attribute
     private String name = "";
     private int alter = 0;
     private double bargeld = 0;
@@ -40,14 +43,19 @@ public class Kunde {
 
     public void setBankListe(ArrayList<Bank> bankListe) {
         this.bankListe = bankListe;
+        for (Bank bank : bankListe) {
+            bank.getKundenListe().add(this);
+        }
     }
 
     public void addBank(Bank bank) {
         bankListe.add(bank);
+        bank.addKunde(this);
     }
 
     public void removeBank(Bank bank) {
         bankListe.remove(bank);
+        bank.removeKunde(this);
     }
 
     // Controller ÜberweisungsAufträge
@@ -92,7 +100,7 @@ public class Kunde {
         this.bargeld = bargeld;
     }
 
-    // Constructors
+    // Konstruktoren
     public Kunde() {
 
     }
@@ -126,6 +134,7 @@ public class Kunde {
         this.alter = alter;
     }
 
+    // Methoden des Kunden
     public ÜberweisungsAuftrag überweisungsAuftragAusfüllen(double betrag, String von_IBAN, String auf_IBAN) {
         ÜberweisungsAuftrag überweisungsAuftrag = new ÜberweisungsAuftrag(betrag, von_IBAN, auf_IBAN);
         addÜberweisungsAuftrag(überweisungsAuftrag);

@@ -2,10 +2,12 @@ package me.timo.banksystem;
 
 public class ÜberweisungsAuftrag {
 
+    // Attribute
     private double betrag = 0;
     private String von_IBAN = "";
     private String auf_IBAN = "";
 
+    // Getter/Setter
     public double getBetrag() {
         return betrag;
     }
@@ -30,6 +32,7 @@ public class ÜberweisungsAuftrag {
         this.auf_IBAN = auf_IBAN;
     }
 
+    // Konstruktor
     public ÜberweisungsAuftrag(double betrag, String von_IBAN, String auf_IBAN) {
         this.betrag = betrag;
         this.von_IBAN = von_IBAN;

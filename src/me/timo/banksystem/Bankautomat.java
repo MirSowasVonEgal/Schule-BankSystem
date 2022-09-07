@@ -2,8 +2,10 @@ package me.timo.banksystem;
 
 public class Bankautomat {
 
+    // Beziehung
     private Bank bank;
 
+    // Controller Bank
     public Bank getBank() {
         return bank;
     }
@@ -12,6 +14,7 @@ public class Bankautomat {
         this.bank = bank;
     }
 
+    // Konstruktoren
     public Bankautomat() {
 
     }
@@ -21,6 +24,7 @@ public class Bankautomat {
         this.bank.setBankautomat(this);
     }
 
+    // Methoden des Bankautomats
     public void abheben(double betrag, String IBAN) {
         Bank.Konto konto = bank.getKontoByIBAN(IBAN);
         if(konto == null) return;

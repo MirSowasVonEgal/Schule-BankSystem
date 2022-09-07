@@ -7,19 +7,23 @@ public class Bank {
 
     public class Konto {
 
-        private Kunde kunde;
+        // Attribute
         private double kontostand = 0;
         private String IBAN = "";
 
+        // Beziehung
+        private Kunde kunde;
+
+        // Controller Kunde
         public Kunde getKunde() {
             return kunde;
         }
 
         public void setKunde(Kunde kunde) {
             this.kunde = kunde;
-            this.kunde.getKontoListe().add(this);
         }
 
+        // Getter/Setter
         public double getKontostand() {
             return kontostand;
         }
@@ -36,6 +40,7 @@ public class Bank {
             this.IBAN = IBAN;
         }
 
+        // Konstruktor
         public Konto(Kunde kunde) {
             this.IBAN = UUID.randomUUID().toString();
             this.kunde = kunde;
@@ -44,11 +49,12 @@ public class Bank {
 
     }
 
+    // Beziehungen
     private Bankautomat bankautomat;
     private ArrayList<Konto> kontoListe = new ArrayList<>();
     private ArrayList<Kunde> kundenListe = new ArrayList<>();
 
-
+    // Attribute
     private String name = "";
     private ArrayList<ÜberweisungsAuftrag> überweisungsAuftragsListe = new ArrayList<>();
 
@@ -59,12 +65,6 @@ public class Bank {
 
     public void setBankautomat(Bankautomat bankautomat) {
         this.bankautomat = bankautomat;
-        this.bankautomat.setBank(this);
-    }
-
-    public Bank(Bankautomat bankautomat) {
-        this.bankautomat = bankautomat;
-        this.bankautomat.setBank(this);
     }
 
     // Controller Konto
@@ -132,8 +132,14 @@ public class Bank {
         überweisungsAuftragsListe.add(überweisungsAuftrag);
     }
 
+    // Konstruktor
     public Bank(String name) {
         this.name = name;
+    }
+
+    public Bank(Bankautomat bankautomat) {
+        this.bankautomat = bankautomat;
+        this.bankautomat.setBank(this);
     }
 
     // Methoden der Bank
