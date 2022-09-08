@@ -89,6 +89,8 @@ public class Bank {
                 return konto;
         }
         return null;
+
+        //return kontoListe.stream().filter(kunde -> kunde.getIBAN().equals(IBAN)).findFirst().orElse(null);
     }
 
     // Controller Kunde
